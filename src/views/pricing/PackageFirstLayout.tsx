@@ -1419,6 +1419,12 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
           {trayMode && <TalkBar onTalkToSales={onTalkToSales} />}
         </div>
 
+        {grouped && !trayMode && (
+          <div className="pt-6">
+            <TalkBar onTalkToSales={onTalkToSales} />
+          </div>
+        )}
+
       </div>
 
       <SubscriptionComparison billing={billing} onSelectPlan={onSelectPlan} />
