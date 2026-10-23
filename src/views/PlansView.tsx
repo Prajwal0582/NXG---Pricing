@@ -14,8 +14,6 @@ interface PlansViewProps {
   /** When set, Pricing opens in purchase-list mode (Buy List recommended). */
   purchaseContext?: ListPurchaseContext | null;
   onBuyListCheckout?: () => void;
-  /** Single-design review links hide the prototype option switcher. */
-  hideOptionSwitcher?: boolean;
 }
 
 function readOptionParam(): PricingOption {
@@ -105,7 +103,6 @@ export default function PlansView({
   onSearchLeads,
   purchaseContext = null,
   onBuyListCheckout,
-  hideOptionSwitcher = false,
 }: PlansViewProps) {
   const isPurchaseMode = Boolean(purchaseContext);
   const contextDefaultPlan: PlanId = isPurchaseMode ? "buy-list" : "pro";
@@ -231,7 +228,7 @@ export default function PlansView({
       />
       {/* Room for the floating option switcher */}
       <div aria-hidden className="h-24" />
-      {!salesOpen && !hideOptionSwitcher && (
+      {!salesOpen && (
         <OptionSwitcher
           option={option}
           onChange={changeOption}
