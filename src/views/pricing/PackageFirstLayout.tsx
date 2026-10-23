@@ -912,6 +912,8 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
   const glowMode = grouped && (groupStyle === "glow" || groupStyle === "tabsGlow");
   /** Focus tabs · Border / Glow — selected card pops up and grows with a springy ease. */
   const popMode = grouped && (groupStyle === "tabsBorder" || groupStyle === "tabsGlow");
+  const borderSelected = (planId: PlanId, isSelected: boolean) =>
+    groupStyle === "tabsBorder" && isSelected ? { borderColor: groupOf(planId).accent.solid } : {};
   const switchMode = grouped && groupStyle === "switch";
   const trayMode = grouped && groupStyle === "tray";
   const iconTiles = glowMode || switchMode || trayMode;
@@ -936,6 +938,14 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
   );
   function cardMotion(planId: PlanId, isSelected: boolean) {
     if (!animated) return { className: "transition-[border-color]", shadow: CARD_SHADOW };
+    if (groupStyle === "tabsBorder") {
+      // Same size as its neighbours — selection shows as a group-colour border and soft shadow.
+      const g = groupOf(planId);
+      return {
+        className: "transition-[border-color,box-shadow] duration-300 ease-out",
+        shadow: isSelected ? `0 0 0 1px ${g.accent.solid}, 0 14px 30px -16px ${g.glow}` : CARD_SHADOW,
+      };
+    }
     const inActive = groupOf(planId).id === activeGroup.id;
     const fade = groupStyle === "tabs" && !inActive ? " opacity-50 saturate-50 scale-[0.98]" : "";
     return {
@@ -1163,7 +1173,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
                     ? "border-[#B9D9EC]"
                     : "border-[#D0D5DD] hover:border-[#98A2B3]"
                 }`}
-                style={{ boxShadow: motion.shadow, ...riseDelay(plan.id) }}
+                style={{ boxShadow: motion.shadow, ...riseDelay(plan.id), ...borderSelected(plan.id, isSelected) }}
               >
                 {/* Row 1 — header (overlays live here so subgrid stays 5 children) */}
                 <div className={`relative px-4 ${compact ? "pt-5 pb-3" : "pt-6 pb-4"} rounded-t-xl self-stretch transition-colors duration-300 ${headerSurface(plan.id, isSelected)}`}>
@@ -1315,7 +1325,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
                 ? "border-[#B9D9EC]"
                 : "border-[#D0D5DD] hover:border-[#98A2B3]"
             }`}
-            style={{ boxShadow: cardMotion("buy-list", buySelected).shadow }}
+            style={{ boxShadow: cardMotion("buy-list", buySelected).shadow, ...borderSelected("buy-list", buySelected) }}
           >
             <div className={`relative px-4 ${compact ? "pt-5 pb-3" : "pt-6 pb-4"} rounded-t-xl self-stretch transition-colors duration-300 ${headerSurface("buy-list", buySelected)}`}>
               {buySelected && (
