@@ -12,6 +12,7 @@ import {
   faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck, faEye } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck as faCircleCheckSolid } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { FeatureItem, GoalId, PlanId } from "../../data/pricingPlans";
 import {
@@ -715,6 +716,17 @@ function GroupTabs({ activeId, onSelect }: { activeId: string; onSelect: (planId
   );
 }
 
+/** Option B3 — diagonal "Save 17%" corner ribbon (annual billing). */
+function SaveRibbon() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute right-0 top-0 z-[2] size-20 overflow-hidden rounded-tr-xl">
+      <span className="absolute right-[-30px] top-[16px] w-[120px] rotate-45 bg-[#0D7867] py-0.5 text-center text-xs font-semibold uppercase leading-[18px] tracking-wide text-white shadow-sm">
+        Save 17%
+      </span>
+    </div>
+  );
+}
+
 /** Option B3 — headline + indented pointers (credits/value summary under the price). */
 function CreditSummary({
   icon,
@@ -805,7 +817,18 @@ function PlanPriceV3({
           </span>
         )}
       </div>
-      <p className="mt-1 text-xs leading-[18px] text-[#475467]">{billingNote}</p>
+      {annual && pricing.strikePrice ? (
+        <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-xs leading-[18px]">
+          <FontAwesomeIcon icon={faCircleCheckSolid} className="text-[14px] text-[#0BA38C]" aria-hidden />
+          <span className="font-semibold text-[#0D7867]">
+            Save {fmtMoney(Number(pricing.strikePrice.replace(/,/g, "")) - Number(pricing.display.replace(/,/g, "")))}/year
+          </span>
+          <span className="text-[#98A2B3]" aria-hidden>·</span>
+          <span className="text-[#475467]">Pay for 10 months, get 12</span>
+        </p>
+      ) : (
+        <p className="mt-1 text-xs leading-[18px] text-[#475467]">{billingNote}</p>
+      )}
       {planId === "pro" ? <ProCreditSummary billing={billing} /> : <CreditSummary {...summary} />}
     </div>
   );
@@ -903,7 +926,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
   const categoryRow = (planId: PlanId, category: string) => (
     <>
       {iconTiles && <IconTile group={groupOf(planId)} neutral={trayMode} />}
-      <div className="flex items-center justify-between gap-2">
+      <div className={`flex items-center justify-between gap-2 ${compact && billing === "annual" && planId !== "buy-list" ? "pr-16" : ""}`}>
         <p className="text-xs font-medium uppercase leading-[18px] text-[#667085]">{category}</p>
         {inCardTags && <GroupTag group={groupOf(planId)} />}
       </div>
@@ -1146,6 +1169,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
                     />
                   )}
                   {showBadge && <PlanBadge label={activeBadgeLabel} />}
+                  {compact && billing === "annual" && plan.annual.strikePrice && <SaveRibbon />}
                   <div className={`flex flex-col ${compact ? "gap-1" : "gap-2"}`}>
                     {categoryRow(plan.id, plan.category)}
                     <h3 className={`font-semibold text-[#008DC3] ${compact ? "text-xl leading-[30px]" : "text-2xl leading-8"}`}>{plan.name}</h3>
