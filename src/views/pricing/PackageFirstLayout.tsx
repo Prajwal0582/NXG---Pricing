@@ -477,9 +477,9 @@ const PLAN_GROUPS = [
     id: "team",
     short: "Team",
     headerTint: "bg-[#F8F7FF]",
-    label: "Team plan · 5 users",
+    label: "Team plan · 5 users or more",
     title: "Team plan",
-    sub: "5 users",
+    sub: "5 users or more",
     icon: faUsers,
     first: "team",
     plans: ["team"],
@@ -794,7 +794,7 @@ function PlanPriceV3({
         }
       : {
           icon: faUsers,
-            title: `${credits} + 5 users`,
+            title: `${credits} + 5 users or more`,
             points: [
               `Credits shared across the team, worth ${worth}`,
               <>
