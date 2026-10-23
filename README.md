@@ -7,6 +7,6 @@ with the B3 grouping styles); search, scenarios and admin screens are not includ
 Links:
 - `/` opens B3 · Value focused
 - `/?option=b` B · Value-led, `/?option=current` the current layout
-- `/?groups=switch|glow|tray|tracks|tabs|spotlight|inline` B3 grouping styles
+- `/?groups=switch|glow|tray|tracks|tabs|spotlight|inline|tabsBorder|tabsGlow` B3 grouping styles
 
 Run locally: `npm install && npm run dev`

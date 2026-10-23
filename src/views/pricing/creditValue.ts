@@ -14,7 +14,7 @@ export const PRICING_OPTIONS: { id: PricingOption; label: string; description: s
 export const isValueLed = (o: PricingOption) => o === "b";
 
 /** Local exploration — how B3 shows Individual / Team / One-time groups and selection. */
-export type GroupStyle = "panels" | "tracks" | "tabs" | "spotlight" | "inline" | "glow" | "switch" | "tray";
+export type GroupStyle = "panels" | "tracks" | "tabs" | "spotlight" | "inline" | "glow" | "switch" | "tray" | "tabsBorder" | "tabsGlow";
 
 export const GROUP_STYLES: { id: GroupStyle; label: string }[] = [
   { id: "panels", label: "Panels" },
@@ -25,6 +25,8 @@ export const GROUP_STYLES: { id: GroupStyle; label: string }[] = [
   { id: "glow", label: "Glow" },
   { id: "switch", label: "Audience switch" },
   { id: "tray", label: "Tray" },
+  { id: "tabsBorder", label: "Focus tabs · Border" },
+  { id: "tabsGlow", label: "Focus tabs · Glow" },
 ];
 
 /** Options that group cards into Individual / Team / One-time panels. */

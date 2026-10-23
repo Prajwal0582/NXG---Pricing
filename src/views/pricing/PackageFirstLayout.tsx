@@ -519,7 +519,7 @@ const groupOf = (planId: PlanId) => PLAN_GROUPS.find((g) => (g.plans as readonly
 function GroupPanel({ group, groupStyle, active }: { group: PlanGroup; groupStyle: GroupStyle; active: boolean }) {
   if (groupStyle === "tabs") return null;
   const look =
-    groupStyle === "tracks"
+    groupStyle === "tracks" || groupStyle === "tabsBorder"
       ? `border ${group.accent.tint} ${active ? `ring-2 ${group.accent.ring} shadow-[0_16px_32px_-16px_rgba(16,24,40,0.35)]` : "opacity-70"}`
       : groupStyle === "spotlight"
         ? active
@@ -535,7 +535,7 @@ function GroupPanel({ group, groupStyle, active }: { group: PlanGroup; groupStyl
 }
 
 function GroupLabel({ group, groupStyle, active }: { group: PlanGroup; groupStyle: GroupStyle; active: boolean }) {
-  if (groupStyle === "tabs") return null;
+  if (groupStyle === "tabs" || groupStyle === "tabsBorder") return null;
   if (groupStyle === "tracks") {
     return (
       <p className={`relative col-span-full flex items-center ${group.column} xl:[grid-row:1]`}>
@@ -907,9 +907,11 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
   /** Exploration styles add lift/fade motion on selection; "panels" keeps the shipped look. */
   const animated = grouped && groupStyle !== "panels";
   /** Group sections (label row, panels, spacer tracks); "inline" keeps a plain 4-up row. */
-  const sectioned = grouped && ["panels", "tracks", "tabs", "spotlight"].includes(groupStyle);
+  const sectioned = grouped && ["panels", "tracks", "tabs", "spotlight", "tabsBorder"].includes(groupStyle);
   const inCardTags = grouped && groupStyle === "inline";
-  const glowMode = grouped && groupStyle === "glow";
+  const glowMode = grouped && (groupStyle === "glow" || groupStyle === "tabsGlow");
+  /** Focus tabs · Border / Glow — selected card pops up and grows with a springy ease. */
+  const popMode = grouped && (groupStyle === "tabsBorder" || groupStyle === "tabsGlow");
   const switchMode = grouped && groupStyle === "switch";
   const trayMode = grouped && groupStyle === "tray";
   const iconTiles = glowMode || switchMode || trayMode;
@@ -937,9 +939,13 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
     const inActive = groupOf(planId).id === activeGroup.id;
     const fade = groupStyle === "tabs" && !inActive ? " opacity-50 saturate-50 scale-[0.98]" : "";
     return {
-      className: `transition-[border-color,transform,box-shadow,opacity,filter] duration-300 ease-out${
-        isSelected ? " -translate-y-1" : ""
-      }${fade}`,
+      className: popMode
+        ? `transition-[border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]${
+            isSelected ? " z-10 -translate-y-2 scale-[1.04]" : " z-0"
+          }`
+        : `transition-[border-color,transform,box-shadow,opacity,filter] duration-300 ease-out${
+            isSelected ? " -translate-y-1" : ""
+          }${fade}`,
       shadow: isSelected
         ? glowMode
           ? `0 28px 60px -18px ${groupOf(planId).glow}, 0 0 0 1px ${groupOf(planId).glow}`
@@ -948,7 +954,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
     };
   }
   const selectedBar = (planId: PlanId) =>
-    animated && ["tracks", "inline", "glow"].includes(groupStyle) ? groupOf(planId).accent.solid : "#008DC3";
+    animated && ["tracks", "inline", "glow", "tabsBorder", "tabsGlow"].includes(groupStyle) ? groupOf(planId).accent.solid : "#008DC3";
 
   const buyPlan = BUY_LIST_PLAN;
   const buySelected = selectedPlan === "buy-list";
@@ -1092,7 +1098,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
         </div>
         )}
 
-        {grouped && (groupStyle === "tabs" || switchMode) && (
+        {grouped && (groupStyle === "tabs" || switchMode || popMode) && (
           <GroupTabs activeId={activeGroup.id} onSelect={onSelectCard} />
         )}
 
