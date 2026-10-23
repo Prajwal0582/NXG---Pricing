@@ -221,7 +221,7 @@ function PlanFeatureChecklist({
         </div>
       )}
       <div className={`flex flex-col ${sectionGap}`}>
-        <p className="text-sm font-semibold leading-5 text-[#667085]">{plan.includedTitle}</p>
+        <p className="text-sm font-semibold leading-5 text-[#667085]">{compact ? "Features" : plan.includedTitle}</p>
         <FeatureRows
           planId={plan.id}
           section="inc"
@@ -230,8 +230,19 @@ function PlanFeatureChecklist({
           expanded={expanded}
           onToggle={onToggle}
         />
+        {/* B3: excluded items continue the same list (no separate "Not included" header). */}
+        {compact && plan.notIncludedItems && plan.notIncludedItems.length > 0 && (
+          <FeatureRows
+            planId={plan.id}
+            section="exc"
+            items={plan.notIncludedItems}
+            Icon={XIcon}
+            expanded={expanded}
+            onToggle={onToggle}
+          />
+        )}
       </div>
-      {plan.notIncludedItems && plan.notIncludedItems.length > 0 && (
+      {!compact && plan.notIncludedItems && plan.notIncludedItems.length > 0 && (
         <div className={`flex flex-col ${sectionGap}`}>
           <p className="text-sm font-semibold leading-5 text-[#667085]">{plan.notIncludedTitle}</p>
           <FeatureRows
@@ -719,8 +730,8 @@ function GroupTabs({ activeId, onSelect }: { activeId: string; onSelect: (planId
 /** Option B3 — diagonal "Save 17%" corner ribbon (annual billing). */
 function SaveRibbon() {
   return (
-    <div aria-hidden className="pointer-events-none absolute right-0 top-0 z-[2] size-20 overflow-hidden rounded-tr-xl">
-      <span className="absolute right-[-30px] top-[16px] w-[120px] rotate-45 bg-[#0D7867] py-0.5 text-center text-xs font-semibold uppercase leading-[18px] tracking-wide text-white shadow-sm">
+    <div aria-hidden className="pointer-events-none absolute right-0 top-0 z-[2] size-24 overflow-hidden rounded-tr-xl">
+      <span className="absolute right-[-40px] top-[22px] w-[160px] rotate-45 bg-[#0D7867] py-1 text-center text-xs font-semibold uppercase leading-[18px] tracking-wide text-white shadow-sm">
         Save 17%
       </span>
     </div>
@@ -789,14 +800,16 @@ function PlanPriceV3({
           title: "No credits included",
           points: [
             `Buy credits as you go, at ${fmtRate(PAYG_CREDIT_RATE)} each`,
-            "Credits power Genie features like exports, email unlocks and campaigns",
+            "Credits power Salesgenie features like exports, email unlocks and campaigns",
+            "Add-on credits power exports, email unlocks, campaigns, MCP and CRM integrations.",
           ],
         }
       : {
           icon: faUsers,
-            title: `${credits} + 5 users or more`,
+            title: `${credits} + 5 users`,
             points: [
               `Credits shared across the team, worth ${worth}`,
+              "Add-on credits power exports, email unlocks, campaigns, MCP and CRM integrations.",
               <>
                 Need more seats? <TalkToSalesLink label="Talk to sales →" onClick={onTalkToSales} />
               </>,
@@ -866,8 +879,8 @@ function ProCreditSummary({ billing }: { billing: PricingLayoutProps["billing"] 
         </p>
       </div>
       <div className="flex items-start gap-2 text-xs leading-[18px] text-[#475467]">
-        <span className="flex h-[18px] w-5 shrink-0 items-center justify-center text-[#008DC3]" aria-hidden>
-          <FontAwesomeIcon icon={faWandMagicSparkles} className="text-[14px]" />
+        <span className="flex h-[18px] w-5 shrink-0 items-center justify-center" aria-hidden>
+          <span className="size-1.5 rounded-full bg-[#008DC3]" />
         </span>
         <p className="min-w-0">Add-on credits power exports, email unlocks, campaigns, MCP and CRM integrations.</p>
       </div>
@@ -930,7 +943,7 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
   const categoryRow = (planId: PlanId, category: string) => (
     <>
       {iconTiles && <IconTile group={groupOf(planId)} neutral={trayMode} />}
-      <div className={`flex items-center justify-between gap-2 ${compact && billing === "annual" && planId !== "buy-list" ? "pr-16" : ""}`}>
+      <div className={`flex items-center justify-between gap-2 ${compact && billing === "annual" && planId !== "buy-list" ? "pr-20" : ""}`}>
         <p className="text-xs font-medium uppercase leading-[18px] text-[#667085]">{category}</p>
         {inCardTags && <GroupTag group={groupOf(planId)} />}
       </div>
