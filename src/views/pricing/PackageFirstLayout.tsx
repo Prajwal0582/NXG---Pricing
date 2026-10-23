@@ -848,7 +848,7 @@ function ProCreditSummary({ billing }: { billing: PricingLayoutProps["billing"] 
           {fmtNumber(v.included)} credits{per} included
         </p>
         <span className="shrink-0 rounded-md bg-[#0D7867] px-1.5 text-xs font-semibold leading-5 text-white">
-          Save {fmtMoney(v.includedValue - v.difference)}
+          Save extra {fmtMoney(v.includedValue - v.difference)}
           {per}
         </span>
       </div>
