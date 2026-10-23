@@ -950,8 +950,9 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
     const fade = groupStyle === "tabs" && !inActive ? " opacity-50 saturate-50 scale-[0.98]" : "";
     return {
       className: popMode
-        ? `transition-[border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]${
-            isSelected ? " z-10 -translate-y-2 scale-[1.04]" : " z-0"
+        ? // Grow from the top edge so the card never rises into the tabs; content scales with it.
+          `origin-top transition-[border-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform${
+            isSelected ? " z-10 -translate-y-1.5 scale-[1.04]" : " z-0"
           }`
         : `transition-[border-color,transform,box-shadow,opacity,filter] duration-300 ease-out${
             isSelected ? " -translate-y-1" : ""
@@ -1120,7 +1121,9 @@ export function PackageFirstLayout(props: PackageFirstLayoutProps) {
           className={`${
             trayMode
               ? "mt-8 rounded-3xl border border-[#EAECF0] bg-[#F2F4F7] p-3 pt-6"
-              : hidesGoalPicker(option)
+              : popMode && groupStyle === "tabsGlow"
+                ? "pt-10 pb-12"
+                : hidesGoalPicker(option)
                 ? "pt-8"
                 : "pt-3"
           } grid grid-cols-1 md:grid-cols-2 ${
