@@ -108,7 +108,7 @@ body {
   border: 2px solid transparent;
   background:
     linear-gradient(#f5faff, #f5faff) padding-box,
-    conic-gradient(from var(--spot-angle), #008dc3, #7a5af8, #12b76a, #f79009, #008dc3) border-box;
+    conic-gradient(from var(--spot-angle), #008dc3, #764fd9, #6572b4, #008dc3) border-box;
   animation: spot-spin 4s linear infinite;
   box-shadow: 0 16px 40px -16px rgba(0, 141, 195, 0.45);
 }
